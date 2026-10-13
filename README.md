@@ -1,3 +1,5 @@
+> 🇮🇷 **این فورک زبان فارسی (راست‌چین) دارد** — Persian (fa) interface language added, plus a full Persian README: [README.fa.md](README.fa.md) · Upstream: [croffasia/itsaplan](https://github.com/croffasia/itsaplan)
+
 <div align="center">
 
 <img src="assets/banner.png" alt="It's a Plan — open-source project management and issue tracking where people and AI agents ship together" width="100%" />
