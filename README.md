@@ -1,4 +1,4 @@
-> 🇮🇷 **این فورک زبان فارسی (راست‌چین) دارد** — Persian (fa) interface language added, plus a full Persian README: [README.fa.md](README.fa.md) · Upstream: [croffasia/itsaplan](https://github.com/croffasia/itsaplan)
+> 🇮🇷 **فارسی (راست‌چین) حالا در پروژه‌ی اصلی هست** ([PR #551](https://github.com/croffasia/itsaplan/pull/551)) — Persian is now part of upstream. This fork only adds a Persian README: [README.fa.md](README.fa.md) · Upstream: [croffasia/itsaplan](https://github.com/croffasia/itsaplan)
 
 <div align="center">
 

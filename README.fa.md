@@ -24,7 +24,7 @@
 
 </div>
 
-> 🇬🇧 [English README](README.md) · 🇮🇷 این فایل ترجمه‌ی فارسی README است. زبان فارسی (راست‌چین) به رابط کاربری این فورک اضافه شده است.
+> 🇬🇧 [English README](README.md) · 🇮🇷 این فایل ترجمه‌ی فارسی README است. زبان فارسی (راست‌چین) رابط کاربری هم اکنون در پروژه‌ی اصلی ([PR #551](https://github.com/croffasia/itsaplan/pull/551)) ادغام شده است.
 
 <div dir="rtl">
 
