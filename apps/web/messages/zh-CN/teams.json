@@ -95,6 +95,7 @@
     "emailPlaceholder": "name@example.com",
     "alreadyMember": "{email} 已在此团队中",
     "alreadyPending": "{email} 已有待处理的邀请",
+    "domainNotAllowed": "此实例不允许 {email} 所在的域名",
     "refused": "无法邀请 {email}",
     "roleLabel": "团队角色",
     "roleHint": {
@@ -107,11 +108,16 @@
     "joinsProject": "加入团队和 {project}",
     "copyLink": "复制链接",
     "copied": "已复制",
+    "resendEmail": "发送邮件",
+    "resendingEmail": "正在发送…",
     "revokeAction": "撤销邀请",
     "revokeTitle": "撤销 {email} 的邀请？",
     "revokeConfirm": "撤销邀请",
     "revokeDescription": "链接将失效。之后可以重新邀请。",
-    "pending": "已邀请"
+    "pending": "已邀请",
+    "expiredAt": "已于 {date} 过期",
+    "renew": "续期",
+    "renewing": "正在续期…"
   },
   "manage": {
     "label": "管理团队",

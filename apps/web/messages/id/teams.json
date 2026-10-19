@@ -95,6 +95,7 @@
     "emailPlaceholder": "nama@example.com",
     "alreadyMember": "{email} sudah berada di tim ini",
     "alreadyPending": "{email} sudah memiliki undangan tertunda",
+    "domainNotAllowed": "Domain {email} tidak diizinkan di instance ini",
     "refused": "{email} tidak dapat diundang",
     "roleLabel": "Peran tim",
     "roleHint": {
@@ -107,11 +108,16 @@
     "joinsProject": "Bergabung ke tim dan {project}",
     "copyLink": "Salin tautan",
     "copied": "Disalin",
+    "resendEmail": "Kirim email",
+    "resendingEmail": "Mengirim…",
     "revokeAction": "Cabut undangan",
     "revokeTitle": "Cabut undangan untuk {email}?",
     "revokeConfirm": "Cabut undangan",
     "revokeDescription": "Tautan tidak akan berfungsi lagi. Anda dapat mengundangnya lagi nanti.",
-    "pending": "Diundang"
+    "pending": "Diundang",
+    "expiredAt": "kedaluwarsa {date}",
+    "renew": "Perbarui",
+    "renewing": "Memperbarui…"
   },
   "manage": {
     "label": "Kelola tim",

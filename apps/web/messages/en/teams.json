@@ -95,6 +95,7 @@
     "emailPlaceholder": "name@example.com",
     "alreadyMember": "{email} is already in this team",
     "alreadyPending": "{email} already has a pending invite",
+    "domainNotAllowed": "{email} is at a domain this instance doesn't allow",
     "refused": "{email} could not be invited",
     "roleLabel": "Team role",
     "roleHint": {
@@ -107,11 +108,16 @@
     "joinsProject": "Joins the team and {project}",
     "copyLink": "Copy link",
     "copied": "Copied",
+    "resendEmail": "Send email",
+    "resendingEmail": "Sending…",
     "revokeAction": "Revoke invite",
     "revokeTitle": "Revoke invite for {email}?",
     "revokeConfirm": "Revoke invite",
     "revokeDescription": "The link stops working. You can invite them again later.",
-    "pending": "Invited"
+    "pending": "Invited",
+    "expiredAt": "expired {date}",
+    "renew": "Renew",
+    "renewing": "Renewing…"
   },
   "manage": {
     "label": "Manage teams",

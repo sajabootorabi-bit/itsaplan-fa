@@ -1,10 +1,15 @@
 import type { FeedFilter, FeedOrder } from '@/lib/api/endpoints/activity';
 
+const scimKey = (workspaceId: number | null) =>
+  workspaceId === null ? (['god', 'scim'] as const) : (['workspace', workspaceId, 'scim'] as const);
+
 // Query keys shared by every service. Each is a stable tuple; a project/issue id
 // or key scopes its entry. Kept in one registry so a mutation in one service can
 // invalidate another service's queries by the same key.
 export const qk = {
   projects: ['projects'] as const,
+  // Under projects, so what refreshes the project list refreshes every search with it.
+  projectSearch: (filters: unknown) => ['projects', 'search', filters] as const,
   teams: ['teams'] as const,
   // One team: its counters and what the caller may do with what it holds.
   team: (teamId: number) => ['team', teamId] as const,
@@ -15,11 +20,9 @@ export const qk = {
   workspaceManagers: (workspaceId: number) => ['workspace', workspaceId, 'managers'] as const,
   workspaceManagerCandidates: (workspaceId: number, search: string) =>
     ['workspace', workspaceId, 'managers', 'candidates', search] as const,
-  workspaceScim: (workspaceId: number) => ['workspace', workspaceId, 'scim'] as const,
-  workspaceScimGroups: (workspaceId: number) =>
-    ['workspace', workspaceId, 'scim', 'groups'] as const,
-  workspaceProjectOptions: (workspaceId: number) =>
-    ['workspace', workspaceId, 'projectOptions'] as const,
+  scim: scimKey,
+  scimGroups: (workspaceId: number | null) => [...scimKey(workspaceId), 'groups'] as const,
+  scimProjects: (workspaceId: number | null) => [...scimKey(workspaceId), 'projects'] as const,
   teamProjectDefaults: (teamId: number) => ['team', teamId, 'project-defaults'] as const,
   // The members of a team and the projects it owns, each read by its own section. A
   // page is scoped by the search term and the window it was read with.
@@ -277,12 +280,16 @@ export const qk = {
   notificationsUnreadTotal: ['notificationsUnreadTotal'] as const,
   // The signed-in user's WebAuthn passkeys (account security page).
   passkeys: ['passkeys'] as const,
+  // The OAuth applications the signed-in user authorized (account security page).
+  connectedApps: ['connectedApps'] as const,
   // The signed-in user's connected external accounts (accounts page): the linked
   // Telegram account, and the auth providers better-auth reports.
   telegramAccount: ['telegramAccount'] as const,
   linkedAccounts: ['linkedAccounts'] as const,
   // The instance sign-in policy, including which social providers are configured.
   authConfig: ['authConfig'] as const,
+  // The name an MCP client registered with, shown on the OAuth consent page.
+  oauthClientName: (clientId: string) => ['oauthClientName', clientId] as const,
   // The signed-in user's personal API keys (API keys page).
   apiKeys: ['apiKeys'] as const,
   // The signed-in user's interface preferences (timezone, theme, issue open mode,

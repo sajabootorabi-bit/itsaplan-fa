@@ -95,6 +95,7 @@
     "emailPlaceholder": "name@example.com",
     "alreadyMember": "{email} вже в цій команді",
     "alreadyPending": "{email} вже запрошений",
+    "domainNotAllowed": "Домен адреси {email} не дозволений на цьому інстансі",
     "refused": "Не вдалося запросити {email}",
     "roleLabel": "Роль у команді",
     "roleHint": {
@@ -107,11 +108,16 @@
     "joinsProject": "Приєднається до команди і до {project}",
     "copyLink": "Скопіювати посилання",
     "copied": "Скопійовано",
+    "resendEmail": "Надіслати лист",
+    "resendingEmail": "Надсилання…",
     "revokeAction": "Відкликати запрошення",
     "revokeTitle": "Відкликати запрошення для {email}?",
     "revokeConfirm": "Відкликати запрошення",
     "revokeDescription": "Посилання перестане працювати. Запросити можна буде знову.",
-    "pending": "Запрошено"
+    "pending": "Запрошено",
+    "expiredAt": "термін минув {date}",
+    "renew": "Оновити",
+    "renewing": "Оновлення…"
   },
   "manage": {
     "label": "Керування командами",

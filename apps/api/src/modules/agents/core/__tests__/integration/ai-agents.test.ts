@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'bun:test';
 import { apikey, db } from '@repo/db';
 import { eq } from 'drizzle-orm';
-import { apiKeyApi, authedApi, type Api } from '#tests/helpers/app';
+import { apiKeyApi, authedApi, type Api, ownWorkspaceId, createProject } from '#tests/helpers/app';
 import { createRole, listProjectRoles } from '#tests/helpers/roles';
 import { addProjectMember } from '#tests/helpers/members';
 import { signUpTestUser } from '#tests/helpers/auth';
@@ -9,6 +9,7 @@ import { resetDb } from '#tests/helpers/db';
 import { createAgent, projectIdOf } from '#tests/helpers/agents';
 import { createCredential } from '#tests/helpers/integrations';
 import { untaggedRoutes } from '#tests/helpers/mcp';
+import { getMastra } from '../../runtime/observability';
 
 // AI agents owned by a team. Each agent is backed by a hidden bot user, owns a
 // better-auth API key, and is a member of the projects it is attached to, acting under
@@ -21,7 +22,7 @@ import { untaggedRoutes } from '#tests/helpers/mcp';
 async function setup() {
   const owner = await signUpTestUser({ name: 'Owner' });
   const asOwner = authedApi(owner.cookie);
-  const project = await asOwner.projects.post({ key: 'MKT', name: 'Marketing' });
+  const project = await createProject(asOwner, { key: 'MKT', name: 'Marketing' });
   return { owner, asOwner, teamId: project.data!.teamId };
 }
 
@@ -188,7 +189,11 @@ describe('ai agents', () => {
 
   it("rejects another team's model credential with 400", async () => {
     const { asOwner } = await setup();
-    const otherTeam = await asOwner.teams.post({ name: 'Engineering', slug: 'engineering' });
+    const otherTeam = await asOwner.teams.post({
+      name: 'Engineering',
+      slug: 'engineering',
+      workspaceId: await ownWorkspaceId(asOwner),
+    });
     await asOwner.teams({ teamId: otherTeam.data!.id }).projects.post({
       key: 'ENG',
       name: 'Engineering',
@@ -360,6 +365,7 @@ describe('ai agents', () => {
       expect(endpoint.bodies.at(-1)).not.toHaveProperty('reasoning_effort');
     } finally {
       endpoint.stop();
+      await getMastra().observability.flush();
     }
   });
 
@@ -821,14 +827,14 @@ describe('ai agents', () => {
     // A second account addresses the agent through its own team, where the store finds
     // nothing: every lookup is scoped to (agentId, teamId).
     const second = authedApi((await signUpTestUser()).cookie);
-    const otherProject = await second.projects.post({ key: 'ENG', name: 'Engineering' });
+    const otherProject = await createProject(second, { key: 'ENG', name: 'Engineering' });
     const res = await agents(second, otherProject.data!.teamId)({ agentId }).patch({ name: 'x' });
     expect(res.status).toBe(404);
   });
 
   it('lists only the agents working in the project the filter names', async () => {
     const { asOwner, teamId } = await setup();
-    await asOwner.projects.post({ key: 'ENG', name: 'Engineering' });
+    await createProject(asOwner, { key: 'ENG', name: 'Engineering' });
     await createAgent(asOwner, 'MKT', { name: 'Mkt Bot', username: 'mkt-bot', kind: 'external' });
     await createAgent(asOwner, 'ENG', { name: 'Eng Bot', username: 'eng-bot', kind: 'external' });
 
@@ -842,7 +848,7 @@ describe('ai agents', () => {
 
   it('attaches an agent to a second project and detaches it again', async () => {
     const { asOwner, teamId } = await setup();
-    await asOwner.projects.post({ key: 'ENG', name: 'Engineering' });
+    await createProject(asOwner, { key: 'ENG', name: 'Engineering' });
     const created = await createAgent(asOwner, 'MKT', {
       name: 'Bot',
       username: 'bot',
@@ -872,7 +878,7 @@ describe('ai agents', () => {
       kind: 'external',
     });
     const second = authedApi((await signUpTestUser()).cookie);
-    await second.projects.post({ key: 'ENG', name: 'Engineering' });
+    await createProject(second, { key: 'ENG', name: 'Engineering' });
 
     const res = await agents(
       asOwner,

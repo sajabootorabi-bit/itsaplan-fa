@@ -95,6 +95,7 @@
     "emailPlaceholder": "nombre@ejemplo.com",
     "alreadyMember": "{email} ya está en este equipo",
     "alreadyPending": "{email} ya tiene una invitación pendiente",
+    "domainNotAllowed": "El dominio de {email} no está permitido en esta instancia",
     "refused": "No se ha podido invitar a {email}",
     "roleLabel": "Rol del equipo",
     "roleHint": {
@@ -107,11 +108,16 @@
     "joinsProject": "Se une al equipo y a {project}",
     "copyLink": "Copiar el enlace",
     "copied": "Copiado",
+    "resendEmail": "Enviar correo",
+    "resendingEmail": "Enviando…",
     "revokeAction": "Revocar invitación",
     "revokeTitle": "¿Revocar la invitación de {email}?",
     "revokeConfirm": "Revocar invitación",
     "revokeDescription": "El enlace deja de funcionar. Puedes volver a invitarlo más tarde.",
-    "pending": "Invitado"
+    "pending": "Invitado",
+    "expiredAt": "caducó el {date}",
+    "renew": "Renovar",
+    "renewing": "Renovando…"
   },
   "manage": {
     "label": "Gestionar equipos",

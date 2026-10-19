@@ -1,6 +1,5 @@
 import {
   auth,
-  getSessionFromHeaders,
   oauthAuthorizationServerMetadata,
   oauthProtectedResourceMetadata,
   openIdConfiguration,
@@ -10,7 +9,6 @@ import {
   hasConfiguredGoogle,
   hasConfiguredOidc,
   getOidcLabel,
-  isAccountDeactivated,
 } from '@repo/auth';
 import { db, hasConfiguredEmailProvider, user } from '@repo/db';
 import { cors } from '@elysiajs/cors';
@@ -21,8 +19,10 @@ import { mountMcp } from './mcp/mount';
 import { setMcpApp } from './mcp/app-ref';
 import { gitWebhookRoutes } from './modules/git/webhook';
 import { scimRoutes } from './modules/scim';
+import { currentUserRoutes } from './modules/current-user';
 import { syncOidcGroupsAfterCallback } from './modules/scim/oidc-sync';
 import { normalizeOpenApiResponse } from './openapi';
+import { requestTracking } from './shared/request-tracker';
 import pkg from '../../../package.json';
 
 const apiUrl = (process.env.API_URL ?? 'http://localhost:3000').replace(/\/+$/, '');
@@ -64,6 +64,8 @@ export const app = new Elysia()
       allowedHeaders: ['Content-Type', 'Authorization', 'x-api-key'],
     }),
   )
+  // Before the routes: a hook applies only to the routes registered after it.
+  .use(requestTracking)
   .onAfterHandle({ as: 'global' }, ({ request, response }) =>
     normalizeOpenApiResponse(request, response),
   )
@@ -263,31 +265,7 @@ export const app = new Elysia()
     if (url.pathname === OIDC_CALLBACK) await syncOidcGroupsAfterCallback(response);
     return response;
   })
-  // Example protected handler: read the session from better-auth.
-  .get(
-    '/me',
-    async ({ request }) => {
-      const session = await getSessionFromHeaders(request.headers);
-      // A deactivated account is not signed in as far as the app is concerned:
-      // every planner route answers 401 for it, and this is what the screens ask
-      // first. Deactivation arrives over SCIM or from god mode, after the session
-      // was opened.
-      if (!session || isAccountDeactivated(session.user)) {
-        return { authenticated: false };
-      }
-      return { authenticated: true, user: session.user };
-    },
-    {
-      detail: {
-        tags: ['System'],
-        summary: 'Get the current session user',
-        description:
-          'Resolve the request credentials to a session and return the user it belongs to. ' +
-          'Without a session, or for a deactivated account, it answers ' +
-          '`{ authenticated: false }` instead of failing.',
-      },
-    },
-  )
+  .use(currentUserRoutes)
   // What the sign-in and sign-up screens need before there is a session: whether
   // registration is open, invite-only, or closed, and which sign-in methods are
   // offered. Public on purpose — the screens are reached logged out. It carries no
@@ -344,9 +322,9 @@ export const app = new Elysia()
   // Planner API: projects, issues, and their dependent entities.
   .use(planner);
 
-// MCP endpoint (POST /mcp). Added after the chain so `type App` (the Eden client
+// MCP endpoint (/mcp). Added after the chain so `type App` (the Eden client
 // type) stays the REST surface; the MCP endpoint is JSON-RPC, not called via Eden.
-// Its tools are generated from the planner routes tagged with mcpTool().
+// Its tools are generated from the routes tagged with mcpTool().
 mountMcp(app);
 
 // Hands the assembled app to the internal agent runtime, which builds an agent's
